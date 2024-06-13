@@ -15,7 +15,7 @@ import java.util.List;
  *
  * @author oscarloha
  */
-public class Atribuidos extends DAO{
+public class ControladorPedidos extends DAO{
     
     
 //    4-Consulta de ventas
@@ -51,7 +51,7 @@ public class Atribuidos extends DAO{
         return ventas;
     }
 
-    // Método para consultar ventas mensuales
+  
     public List<Venta> consultarVentasMensuales(int mes, int año) {
         List<Venta> ventas = new ArrayList<>();
         String sql = String.format("""
