@@ -1,17 +1,21 @@
 package grupo.main;
 
+import java.util.Date;
 import java.util.Scanner;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import grupo.entidades.Producto;
+import grupo.entidades.Venta;
 import grupo.persistencia.CrearTablasDAO;
 import grupo.persistencia.ProductoDAO;
+import grupo.persistencia.VentaDAO;
 
 public class Main {
 
     ProductoDAO productoDAO = new ProductoDAO();
+    VentaDAO ventaDAO = new VentaDAO();
 
     private static final Logger LOGGER = LogManager.getLogger();
     private static final CrearTablasDAO crearTablasDAO = new CrearTablasDAO();
@@ -19,13 +23,14 @@ public class Main {
 
     public static void main(String[] args) {
 
+        Main principal = new Main();    
         crearTablasDAO.crearTablas();
 
-        menuPrincipal();
+        principal.menuPrincipal();
 
     }
 
-    public static void menuPrincipal(){
+    public void menuPrincipal(){
 
         String opcion = null;
 
@@ -49,7 +54,7 @@ public class Main {
 
             switch (opcion) {
                 case "1":
-                    
+                    cobrarProductos();
                     break;
                 default:
                     throw new AssertionError();
@@ -99,6 +104,10 @@ public class Main {
             }
 
         } while (nombre.equals(""));
+
+        Venta venta = new Venta(new Date(), montoTotal);
+
+        ventaDAO.insertarVenta(venta);
 
     }
 
