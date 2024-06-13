@@ -22,31 +22,49 @@ public class Atribuidos extends DAO{
 //        a- Diaria
 //        b- Mensual
     
-    
-    
-
-    public List<Venta> obtenerVentasDiarias(Date fecha) {
-        String sql = "SELECT * FROM venta WHERE fecha_venta = '" + fecha + "'";
-        return consultarVentas(sql);
-    }
-
-
-    public List<Venta> obtenerVentasMensuales(int mes, int año) {
+   
+       
+       
+       public List<Venta> consultarVentasDiarias(Date fecha) {
+        List<Venta> ventas = new ArrayList<>();
         String sql = String.format("""
                 SELECT * FROM venta 
-                WHERE MONTH(fecha_venta) = %d AND YEAR(fecha_venta) = %d
-                """, mes, año);
-        return consultarVentas(sql);
-    }
+                WHERE fecha_venta = '%s';
+                """, fecha);
 
-       private List<Venta> consultarVentas(String sql) {
-        List<Venta> ventas = new ArrayList<>();
         consultarBase(sql);
 
         try {
             while (resultSet.next()) {
                 Venta venta = new Venta();
-                venta.setId(resultSet.getInt("id"));
+                venta.setId(resultSet.getInt("id_venta"));
+                venta.setFecha(resultSet.getDate("fecha_venta"));
+                venta.setMontoTotal(resultSet.getFloat("monto_venta"));
+                ventas.add(venta);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+            desconectarBase();
+        }
+
+        return ventas;
+    }
+
+    // Método para consultar ventas mensuales
+    public List<Venta> consultarVentasMensuales(int mes, int año) {
+        List<Venta> ventas = new ArrayList<>();
+        String sql = String.format("""
+                SELECT * FROM venta 
+                WHERE MONTH(fecha_venta) = %d AND YEAR(fecha_venta) = %d;
+                """, mes, año);
+
+        consultarBase(sql);
+
+        try {
+            while (resultSet.next()) {
+                Venta venta = new Venta();
+                venta.setId(resultSet.getInt("id_venta"));
                 venta.setFecha(resultSet.getDate("fecha_venta"));
                 venta.setMontoTotal(resultSet.getFloat("monto_venta"));
                 ventas.add(venta);
@@ -60,5 +78,6 @@ public class Atribuidos extends DAO{
         return ventas;
     }
 }
+
     
 
