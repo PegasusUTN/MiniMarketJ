@@ -1,8 +1,9 @@
 package grupo.persistencia;
 
+import java.sql.Date;
 import java.sql.SQLException;
+import java.time.LocalDate;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 import grupo.entidades.Venta;
@@ -11,27 +12,53 @@ public class VentaDAO extends DAO{
 
     public void insertarVenta(Venta venta){
 
-        String sql = String.format("""
-                INSERT INTO venta (fecha_venta, monto_venta) 
-                VALUES ('%s', '%f');
-                """, venta.getFecha(), venta.getMontoTotal());
+        String sql = "INSERT INTO venta (fecha_venta, monto_venta) VALUES (? , ?);";
 
-        insertarModificarEliminar(sql);
+        Date fecha = new Date(venta.getFecha().getTime());
+
+        conectarBase();
+
+        try {
+            pstmt = conn.prepareStatement(sql);
+
+            pstmt.setDate(1, fecha);
+            pstmt.setFloat(2, venta.getMontoTotal());
+
+            pstmt.executeUpdate();
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }finally{
+            desconectarBase();
+        }
 
     }
-
-    //    4-Consulta de ventas
-    //        a- Diaria
-    //        b- Mensual
-
-    public List<Venta> consultarVentasDiarias(Date fecha) {
+    
+    public List<Venta> consultarVentasDiarias(LocalDate fecha) {
         List<Venta> ventas = new ArrayList<>();
-        String sql = String.format("""
+        String sql = """
                 SELECT * FROM venta 
-                WHERE fecha_venta = '%s';
-                """, fecha);
+                WHERE fecha_venta = ?;""";
+        
+        conectarBase();
 
-        consultarBase(sql);
+        
+
+        Date fechaSql = Date.valueOf(fecha);
+
+        try {
+
+            pstmt = conn.prepareStatement(sql);
+
+            pstmt.setDate(1, fechaSql);
+
+            resultSet = pstmt.executeQuery();
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        
 
         try {
             while (resultSet.next()) {
@@ -41,13 +68,16 @@ public class VentaDAO extends DAO{
                 venta.setMontoTotal(resultSet.getFloat("monto_venta"));
                 ventas.add(venta);
             }
+
+            return ventas;
+
         } catch (SQLException e) {
             e.printStackTrace();
         } finally {
             desconectarBase();
         }
 
-        return ventas;
+        return null;
     }
 
   
@@ -68,13 +98,48 @@ public class VentaDAO extends DAO{
                 venta.setMontoTotal(resultSet.getFloat("monto_venta"));
                 ventas.add(venta);
             }
+
+            return ventas;
+
         } catch (SQLException e) {
             e.printStackTrace();
         } finally {
             desconectarBase();
         }
 
-        return ventas;
+        return null;
+    }
+
+    public ArrayList<Venta> consultarVentas(){
+
+        String sql = "SELECT * FROM venta;";
+
+        consultarBase(sql);
+
+        ArrayList<Venta> ventas = new ArrayList<>();
+
+        try {
+            while (resultSet.next()) {
+                
+                Venta venta = new Venta();
+                venta.setId(resultSet.getInt(1));
+                venta.setFecha(resultSet.getDate(2));
+                venta.setMontoTotal(resultSet.getFloat(3));
+
+                ventas.add(venta);
+
+            }
+
+            return ventas;
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }finally{
+            desconectarBase();
+        }
+
+        return null;
+
     }
 
 }

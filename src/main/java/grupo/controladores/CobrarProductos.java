@@ -5,7 +5,7 @@ import java.util.Date;
 import grupo.entidades.Producto;
 import grupo.entidades.Venta;
 
-public class CobrarProductosControlador {
+public class CobrarProductos extends EsquemaOpciones{
 
     public void cobrarProductos(){
 
@@ -43,12 +43,14 @@ public class CobrarProductosControlador {
                     LOGGER.info("El producto ingresado no existe!");
                 }
 
+            }else{
+                if (nombre.equals("")) break;
             }
 
-        } while (nombre.equals(""));
+        } while (true);
 
         Venta venta = new Venta(new Date(), montoTotal);
-
+        
         ventaDAO.insertarVenta(venta);
 
     }

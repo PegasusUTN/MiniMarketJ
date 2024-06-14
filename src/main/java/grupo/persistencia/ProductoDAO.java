@@ -10,7 +10,7 @@ public class ProductoDAO extends DAO{
 
         String sql = String.format("""
                         INSERT INTO producto (nombre_producto, precio_producto, stock_producto)
-                        VALUES ('%s', '%f', '%d');
+                        VALUES ('%s', '%.2f', '%d');
                     """, producto.getNombre(), producto.getPrecio(), producto.getStock());
         
         insertarModificarEliminar(sql);
@@ -22,7 +22,7 @@ public class ProductoDAO extends DAO{
         String sql = String.format("""
                 UPDATE producto SET
                 nombre_producto = '%s',
-                precio_producto = '%f',
+                precio_producto = '%.2f',
                 stock_producto = '%d'
                 WHERE nombre_producto = '%s';
                 """, producto.getNombre(), producto.getPrecio(), producto.getStock(), producto.getNombre());
@@ -35,7 +35,7 @@ public class ProductoDAO extends DAO{
 
         String sql = String.format("""
                 UPDATE producto SET
-                stock_producto = '%d' WHERE nombre_producto = '%s';
+                stock_producto = %d WHERE nombre_producto = '%s';
                 """, producto.getStock(), producto.getNombre());
         
         insertarModificarEliminar(sql);
@@ -45,29 +45,28 @@ public class ProductoDAO extends DAO{
     public Producto buscarProducto(String nombre){
 
         String sql = String.format("""
-                SELECT * FROM producto
-                WHERE nombre_producto = '%s'
+                SELECT * FROM producto WHERE nombre_producto = '%s'
                 """, nombre);
         
         consultarBase(sql);
 
-        Producto producto = new Producto();
         try {
 
             while (resultSet.next()) {
                 
+                Producto producto = new Producto();
                 producto.setId(resultSet.getInt(1));
                 producto.setNombre(resultSet.getString(2));
                 producto.setPrecio(resultSet.getFloat(3));
                 producto.setStock(resultSet.getInt(4));
 
+                return producto;
             }
 
-            desconectarBase();
-            return producto;
-
         } catch (SQLException ex) {
-            ex.printStackTrace();
+            ex.getMessage();
+        }finally{
+            desconectarBase();
         }
 
         return null;

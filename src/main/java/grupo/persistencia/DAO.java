@@ -2,6 +2,7 @@ package grupo.persistencia;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
@@ -11,6 +12,7 @@ public abstract  class DAO {
     protected Connection conn = null;
     protected Statement stmt = null;
     protected ResultSet resultSet = null;
+    protected PreparedStatement pstmt = null;
 
     protected final String DRIVER = "org.h2.Driver";
     protected final String URL = "jdbc:h2:tcp://localhost/~/test";
@@ -40,6 +42,9 @@ public abstract  class DAO {
             }
             if (resultSet != null){
                 resultSet.close();
+            }
+            if (pstmt != null){
+                pstmt.close();
             }
 
         } catch (Exception e) {
