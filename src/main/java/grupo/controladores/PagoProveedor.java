@@ -28,7 +28,7 @@ public class PagoProveedor extends EsquemaOpciones{
 
         LOGGER.info("Ingrese el numero que corresponde al proveedor: ");
         for (int i = 0; i < proveedores.size(); i++) {
-            LOGGER.info(i + 1 + ". " + proveedores.get(i).getNombreComercial());
+            LOGGER.info(i + 1 + ". " + proveedores.get(i).getNombreComercial() + "  $" + proveedores.get(i).getDeuda());
         }
         try {
             opcionSeleccionada = this.sc.nextInt();

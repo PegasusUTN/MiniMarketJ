@@ -16,7 +16,7 @@ public abstract  class DAO {
 
     protected final String DRIVER = "org.h2.Driver";
     protected final String URL = "jdbc:h2:tcp://localhost/~/test";
-    protected final String USER = "sa";
+    protected final String USER = "Matias Castillo";
     protected final String PASS = "";
 
     protected  void conectarBase(){

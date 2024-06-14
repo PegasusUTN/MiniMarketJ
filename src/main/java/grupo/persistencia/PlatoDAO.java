@@ -30,15 +30,16 @@ public class PlatoDAO extends DAO{
 
     }
 
-    public Plato consultarPlato(String nombre){
+    public Plato consultarPlato(String nombre) {
 
         String sql = String.format("SELECT * FROM plato WHERE nombre_plato = '%s';", nombre);
 
         consultarBase(sql);
 
         try {
-            while (resultSet.next()) {
-                
+            if (!resultSet.next()) {
+                return null;
+            } else {
                 Plato plato = new Plato();
                 plato.setId(resultSet.getInt(1));
                 plato.setNombre(resultSet.getString(2));
@@ -48,10 +49,9 @@ public class PlatoDAO extends DAO{
                 return plato;
 
             }
-
         } catch (SQLException e) {
             e.printStackTrace();
-        }finally{
+        } finally {
             desconectarBase();
         }
 

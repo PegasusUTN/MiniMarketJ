@@ -2,6 +2,8 @@ package grupo.persistencia;
 
 import java.sql.SQLException;
 
+import java.util.ArrayList;
+
 import grupo.entidades.Producto;
 
 public class ProductoDAO extends DAO{
@@ -71,6 +73,33 @@ public class ProductoDAO extends DAO{
 
         return null;
     
+    }
+
+    public ArrayList<Producto> buscarProductos() {
+        String sql = String.format("SELECT * FROM producto WHERE stock_producto > 0");
+        ArrayList<Producto> productos = new ArrayList<>();
+        this.consultarBase(sql);
+        //while para retornar un arrayList de proveedores
+
+        try {
+            if (!this.resultSet.next()) {
+                return null;
+            }
+            do {
+                Producto producto = new Producto();
+                producto.setId(this.resultSet.getInt("id_producto"));
+                producto.setNombre(this.resultSet.getString("nombre_producto"));
+                producto.setPrecio(this.resultSet.getFloat("precio_producto"));
+                producto.setStock(this.resultSet.getInt("stock_producto"));
+                productos.add(producto);
+            } while (this.resultSet.next());
+            return productos;
+        } catch (SQLException ex) {
+            ex.getMessage();
+            return null;
+        } finally {
+            desconectarBase();
+        }
     }
 
 }

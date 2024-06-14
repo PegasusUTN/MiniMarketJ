@@ -23,33 +23,41 @@ public class SolicitarComanda extends EsquemaOpciones{
 
     }
 
-    public float agregarPlato(){
+    public float agregarPlato() {
 
         float montoTotal = 0;
 
         do {
-            
+
             mostrarPlatos();
 
             LOGGER.info("Ingrese el nombre del plato. Si no desea agregar mas platos presione unicamente ENTER:");
             String nombrePlato = sc.nextLine();
 
-            if (nombrePlato.equals("")) break;
+            if (nombrePlato.equals("")) {
+                break;
+            }
 
             Plato plato = platoDAO.consultarPlato(nombrePlato);
+
+            if (plato != null) {
+                
+                montoTotal += plato.getPrecio();
+                int pedidoPlato = plato.getVecesPedido() + 1;
+
+                plato.setVecesPedido(pedidoPlato);
+
+                platoDAO.modificarPlato(plato);
+                LOGGER.info(plato.getNombre() + " agregado a la comanda");
             
-            montoTotal += plato.getPrecio();
+            } else {
+                LOGGER.info("Plato inválido..");
 
-            int pedidoPlato = plato.getVecesPedido() + 1;
-
-            plato.setVecesPedido(pedidoPlato);
-
-            platoDAO.modificarPlato(plato);
-
+            }
         } while (true);
 
         return montoTotal;
-
+        
     }
 
     public void mostrarPlatos(){
